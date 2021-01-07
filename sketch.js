@@ -6,7 +6,7 @@ var level, edges, edges1;
 var button1, button1_img;
 
 //next game is the maze game
-var treasure, treasure_img, thief1, thief_img1;
+var treasure, treasure_img, thief1, thief_img1, obGroup;
 
 //next game is the infinte runner game
 var police, policeGroup, police_img, ground, scene_img, coin, coinGroup, coin_img, button2, button2_img, PLAY, END, score, gameState, gameOver, gameOver_img, restart, restart_img, thief2, thief_img2;
@@ -54,6 +54,8 @@ function setup() {
   //treasure
   treasure = createSprite(680, 50);
   treasure.visible = false;
+
+  obGroup = new Group();
 
   //******************************* */
   thief2 = createSprite(50, 390, 20, 20);
@@ -112,6 +114,12 @@ function draw() {
     button1.visible = false;
     treasure.visible = true;
 
+    obs();
+
+    if (thief1.isTouching(obGroup)) {
+      thief1.x = 84
+      thief1.y = 394
+    }
     thief1.collide(edges[0]);
     thief1.collide(edges[1]);
     thief1.collide(edges[2]);
@@ -144,7 +152,7 @@ function draw() {
   if (level === "level_3") {
     treasure.visible = false;
     ground.visible = true;
-    // button2.visible = true;
+    obGroup.destroyEach();
     thief1.visible = false;
     thief2.visible = true;
 
@@ -161,9 +169,7 @@ function draw() {
         score = score + 1;
         coinGroup.destroyEach();
       }
-      if (score === 1) {
-        level = "level4";
-      }
+
       ground.velocityX = -(6 + 3 * score / 100);
 
       if (keyDown("space")) {
@@ -208,40 +214,33 @@ function draw() {
         reset();
       }
 
-      /*  if (mousePressedOver(button2)) {
-          level = "level_4";
-        }*/
-    }
-
-    if (level === "level4") {
-      ground.visible = false;
-      thief2.visible = false;
-      thief1.visible = false;
-      restart.visible = false;
-      gameOver.visible = false;
-      policeGroup.destroyEach()
-      ground.destroy();
-      thief1.destroy();
-      thief2.destroy();
-
-      //************************************************************************************************** *
-
-
-
-
-
 
     }
+
+
   }
   drawSprites();
   text(mouseX + "," + mouseY, mouseX, mouseY);
 
 }
 
+function reset() {
+  gameState = PLAY;
+  gameOver.visible = false;
+  restart.visible = false;
 
+  coinGroup.destroyEach();
+  policeGroup.destroyEach();
+
+  // thief.changeAnimation("running",thief_running);
+
+
+  score = 0;
+
+}
 function spawnCoins() {
 
-  if (frameCount % 20 === 0) {
+  if (frameCount % 200 === 0) {
     coin = createSprite(800, 320, 40, 10);
     coin.y = Math.round(random(180, 320));
     //coin.addImage(cloudImage);
@@ -276,17 +275,9 @@ function spawnPolice() {
   }
 }
 
-function reset() {
-  gameState = PLAY;
-  gameOver.visible = false;
-  restart.visible = false;
 
-  coinGroup.destroyEach();
-  policeGroup.destroyEach();
+function obs() {
+  var ob1 = createSprite(100, 20, 100, 30)
 
-  // thief.changeAnimation("running",thief_running);
-
-
-  score = 0;
-
+  obGroup.add(ob1);
 }
